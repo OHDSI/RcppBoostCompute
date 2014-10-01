@@ -1,3 +1,8 @@
-useDynLib(RcppVexCL)
+useDynLib(RcppBoostCompute)
 exportPattern("^[[:alpha:]]+")
-importFrom(Rcpp, evalCpp)
+import(
+    BH,
+    BoostCompiledLibraries,
+	Rcpp
+)
+

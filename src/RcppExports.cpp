@@ -5,14 +5,121 @@
 
 using namespace Rcpp;
 
-// rcpp_hello_world
-List rcpp_hello_world();
-RcppExport SEXP RcppVexCL_rcpp_hello_world() {
+// compute_hello_world
+void compute_hello_world();
+RcppExport SEXP RcppBoostCompute_compute_hello_world() {
+BEGIN_RCPP
+    {
+        Rcpp::RNGScope __rngScope;
+        compute_hello_world();
+    }
+    return R_NilValue;
+END_RCPP
+}
+// getBoostComputeEnvironment
+List getBoostComputeEnvironment();
+RcppExport SEXP RcppBoostCompute_getBoostComputeEnvironment() {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        List __result = rcpp_hello_world();
+        List __result = getBoostComputeEnvironment();
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// getProgramCache
+List getProgramCache(SEXP sexpContext);
+RcppExport SEXP RcppBoostCompute_getProgramCache(SEXP sexpContextSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type sexpContext(sexpContextSEXP );
+        List __result = getProgramCache(sexpContext);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// copyToDevice
+SEXP copyToDevice(SEXP sexpContext, SEXP sexpQueue, const std::vector<int>& rVector);
+RcppExport SEXP RcppBoostCompute_copyToDevice(SEXP sexpContextSEXP, SEXP sexpQueueSEXP, SEXP rVectorSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type sexpContext(sexpContextSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type sexpQueue(sexpQueueSEXP );
+        Rcpp::traits::input_parameter< const std::vector<int>& >::type rVector(rVectorSEXP );
+        SEXP __result = copyToDevice(sexpContext, sexpQueue, rVector);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// copyToHost
+SEXP copyToHost(const std::vector<int>& rVector);
+RcppExport SEXP RcppBoostCompute_copyToHost(SEXP rVectorSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< const std::vector<int>& >::type rVector(rVectorSEXP );
+        SEXP __result = copyToHost(rVector);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// simpleTransformationReduction
+double simpleTransformationReduction(SEXP sexpContext, SEXP sexpQueue, SEXP sexpDeviceVector);
+RcppExport SEXP RcppBoostCompute_simpleTransformationReduction(SEXP sexpContextSEXP, SEXP sexpQueueSEXP, SEXP sexpDeviceVectorSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type sexpContext(sexpContextSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type sexpQueue(sexpQueueSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type sexpDeviceVector(sexpDeviceVectorSEXP );
+        double __result = simpleTransformationReduction(sexpContext, sexpQueue, sexpDeviceVector);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// simpleTransformationReductionWithCopy
+double simpleTransformationReductionWithCopy(SEXP sexpContext, SEXP sexpQueue, const std::vector<int>& rVector);
+RcppExport SEXP RcppBoostCompute_simpleTransformationReductionWithCopy(SEXP sexpContextSEXP, SEXP sexpQueueSEXP, SEXP rVectorSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type sexpContext(sexpContextSEXP );
+        Rcpp::traits::input_parameter< SEXP >::type sexpQueue(sexpQueueSEXP );
+        Rcpp::traits::input_parameter< const std::vector<int>& >::type rVector(rVectorSEXP );
+        double __result = simpleTransformationReductionWithCopy(sexpContext, sexpQueue, rVector);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// simpleTransformationReductionNoParallel
+double simpleTransformationReductionNoParallel(SEXP sexpHostVector);
+RcppExport SEXP RcppBoostCompute_simpleTransformationReductionNoParallel(SEXP sexpHostVectorSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< SEXP >::type sexpHostVector(sexpHostVectorSEXP );
+        double __result = simpleTransformationReductionNoParallel(sexpHostVector);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);

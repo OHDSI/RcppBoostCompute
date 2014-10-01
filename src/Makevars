@@ -1,6 +1,6 @@
 CXX_STD = CXX11
 
-PKG_CPPFLAGS = -I../inst/include  -Wno-unused-local-typedefs
+PKG_CPPFLAGS = -I../inst/include 
 
 PKG_LIBS = `Rscript -e 'BoostCompiledLibraries:::BoostLdFlags()'`
 
