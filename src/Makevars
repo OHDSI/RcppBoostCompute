@@ -1,7 +1,8 @@
 CXX_STD = CXX11
 
 PKG_CPPFLAGS = -I../inst/include \
-	-Wempty-body -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized
+	-Wall -Wclobbered -Wempty-body -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized \
+	-Wunused-but-set-parameter -Wno-comment -Wno-type-limits -Wno-strict-aliasing -Wno-missing-braces
 
 PKG_LIBS = `Rscript -e 'BoostCompiledLibraries:::BoostLdFlags()'` -lOpenCL
 
@@ -10,3 +11,6 @@ SOURCES = $(wildcard *.cpp)
 OBJECTS = $(SOURCES:.cpp=.o)
 
 
+
+
+/usr/bin/c++    -fopenmp -std=c++0x -Wall -Wclobbered -Wempty-body -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized -Wunused-but-set-parameter -Wno-comment -Wno-type-limits -Wno-strict-aliasing -Wno-missing-braces    CMakeFiles/fft.dir/fft.cpp.o  -o fft -rdynamic -lOpenCL -lboost_date_time -lboost_filesystem -lboost_system -lboost_thread -lboost_unit_test_framework -lboost_program_options -lpthread
