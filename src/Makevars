@@ -1,6 +1,7 @@
 CXX_STD = CXX11
 
-PKG_CPPFLAGS = -I../inst/include -framework OpenCL
+PKG_CPPFLAGS = -I../inst/include -framework OpenCL -lopencl \
+	-Wempty-body -Wmissing-field-initializers -Wsign-compare -Wtype-limits -Wuninitialized
 
 PKG_LIBS = `Rscript -e 'BoostCompiledLibraries:::BoostLdFlags()'`
 
