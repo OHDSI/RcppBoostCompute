@@ -4,6 +4,8 @@ PKG_CPPFLAGS = -I../inst/include
 
 PKG_LIBS = `Rscript -e 'BoostCompiledLibraries:::BoostLdFlags()'` @OPENCL_LIB@
 
-SOURCES = $(wildcard *.cpp)
+OBJECTS = \
+	compute_hello_world.o
+	
 
-OBJECTS = $(SOURCES:.cpp=.o)
+	

@@ -5,8 +5,6 @@
 #define BOOST_COMPUTE_DEBUG_KERNEL_COMPILATION
 #define MAS_DEBUG
 
-#define CL_API_SUFFIX__VERSION_1_0
-
 #include <boost/compute/algorithm/transform.hpp>
 #include <boost/compute/algorithm/transform_reduce.hpp>
 #include <boost/compute/container/vector.hpp>
