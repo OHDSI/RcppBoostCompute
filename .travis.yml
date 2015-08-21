@@ -20,7 +20,6 @@ before_script:
 
 script:
     - ./travis-tool.sh run_tests
-    - cat /usr/include/CL/cl.h
 
 after_failure:
     - ./travis-tool.sh dump_logs
