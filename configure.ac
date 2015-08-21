@@ -18,7 +18,7 @@ case $RHOST in
         # Do something specific for mac
         OPENCL_LIB="-framework OpenCL"
         ;;
-  linux*)
+  Linux*)
         # Do something specific for linux
         OPENCL_LIB="-lOpenCL"
         ;;
