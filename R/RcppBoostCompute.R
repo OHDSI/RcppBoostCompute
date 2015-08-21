@@ -6,4 +6,6 @@
 #' @import BoostCompiledLibraries
 #' @import BH
 #' @import Rcpp
+#' 
+#' @export compute_hello_world
 NULL
