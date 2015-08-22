@@ -2,7 +2,7 @@
 #include <vector>
 #include <algorithm>
 
-#define BOOST_COMPUTE_DEBUG_KERNEL_COMPILATION
+// #define BOOST_COMPUTE_DEBUG_KERNEL_COMPILATION
 #define MAS_DEBUG
 
 #include <boost/compute/algorithm/transform.hpp>
