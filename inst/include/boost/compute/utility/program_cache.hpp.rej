@@ -1,0 +1,21 @@
+***************
+*** 161,166 ****
+  
+          return *cache;
+      }
+  
+  private:
+      detail::lru_cache<std::pair<std::string, std::string>, program> m_cache;
+--- 161,172 ----
+  
+          return *cache;
+      }
++     
++     // MAS ADD
++     std::list<std::pair<std::string, std::string>> get_keys() const 
++     {
++         return m_cache.get_keys();
++     }        
+  
+  private:
+      detail::lru_cache<std::pair<std::string, std::string>, program> m_cache;

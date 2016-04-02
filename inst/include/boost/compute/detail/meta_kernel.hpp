@@ -36,8 +36,8 @@
 #include <boost/compute/image_sampler.hpp>
 #include <boost/compute/memory_object.hpp>
 #include <boost/compute/detail/device_ptr.hpp>
-#include <boost/compute/detail/program_cache.hpp>
 #include <boost/compute/detail/sha1.hpp>
+#include <boost/compute/utility/program_cache.hpp>
 
 namespace boost {
 namespace compute {
@@ -189,7 +189,7 @@ struct meta_kernel_buffer_info
 {
     meta_kernel_buffer_info(const buffer &buffer,
                             const std::string &id,
-                            const std::string &addr_space,
+                            memory_object::address_space addr_space,
                             size_t i)
       : m_mem(buffer.get()),
         identifier(id),
@@ -200,7 +200,7 @@ struct meta_kernel_buffer_info
 
     cl_mem m_mem;
     std::string identifier;
-    std::string address_space;
+    memory_object::address_space address_space;
     size_t index;
 };
 
@@ -336,21 +336,15 @@ public:
         std::string source = this->source();
 
         // generate cache key
-        std::string cache_key = detail::sha1(source);
+        std::string cache_key = "__boost_meta_kernel_" + detail::sha1(source);
 
-        // try to look the program up in the cache
-        boost::shared_ptr<program_cache> cache = get_program_cache(context);
-        ::boost::compute::program program = cache->get(cache_key);
+        // load program cache
+        boost::shared_ptr<program_cache> cache =
+            program_cache::get_global_cache(context);
 
-        // build the program if it was not in the cache
-        if(!program.get()){        
-       
-            program = ::boost::compute::program::build_with_source(
-                source, context, options
-            );
-
-            cache->insert(cache_key, program);
-        }
+        // load (or build) program from cache
+        ::boost::compute::program program =
+            cache->get_or_build(cache_key, options, source, context);
 
         // create kernel
         ::boost::compute::kernel kernel = program.create_kernel(name());
@@ -388,21 +382,10 @@ public:
     }
 
     template<class T>
-    size_t add_arg(const std::string &qualifiers, const std::string &name)
+    size_t add_arg(memory_object::address_space address_space,
+                   const std::string &name)
     {
-        size_t index = add_arg<T>(name);
-        m_args[index] = qualifiers + " " + m_args[index];
-        return index;
-    }
-
-    template<class T>
-    size_t add_arg(const std::string &qualifiers,
-                   const std::string &name,
-                   const T &value)
-    {
-        size_t index = add_arg<T>(qualifiers, name);
-        set_arg<T>(index, value);
-        return index;
+        return add_arg_with_qualifiers<T>(address_space_prefix(address_space), name);
     }
 
     template<class T>
@@ -594,6 +577,11 @@ public:
         }
     }
 
+    meta_kernel& operator<<(const meta_kernel_literal<signed char> &literal)
+    {
+        return *this << lit<char>(literal.value());
+    }
+
     meta_kernel& operator<<(const meta_kernel_literal<unsigned char> &literal)
     {
         return *this << uint_(literal.value());
@@ -676,7 +664,8 @@ public:
 
     template<class T>
     std::string get_buffer_identifier(const buffer &buffer,
-                                      const std::string &address_space = "__global")
+                                      const memory_object::address_space address_space =
+                                          memory_object::global_memory)
     {
         // check if we've already seen buffer
         for(size_t i = 0; i < m_stored_buffers.size(); i++){
@@ -700,10 +689,11 @@ public:
         return identifier;
     }
 
-    std::string get_image_identifier(const std::string qualifiers,
-                                     const image2d &image)
+    std::string get_image_identifier(const char *qualifiers, const image2d &image)
     {
-        add_arg(qualifiers, "image", image);
+        size_t index = add_arg_with_qualifiers<image2d>(qualifiers, "image");
+
+        set_arg(index, image);
 
         return "image";
     }
@@ -856,6 +846,32 @@ public:
     #undef BOOST_COMPUTE_META_KERNEL_STREAM_FUNCTION_ARG
     #undef BOOST_COMPUTE_META_KERNEL_INSERT_FUNCTION_ARGS
 
+    static const char* address_space_prefix(const memory_object::address_space value)
+    {
+        switch(value){
+            case memory_object::global_memory: return "__global";
+            case memory_object::local_memory: return "__local";
+            case memory_object::private_memory: return "__private";
+            case memory_object::constant_memory: return "__constant";
+        };
+
+        return 0; // unreachable
+    }
+
+private:
+    template<class T>
+    size_t add_arg_with_qualifiers(const char *qualifiers, const std::string &name)
+    {
+        size_t index = add_arg<T>(name);
+
+        // update argument type declaration with qualifiers
+        std::stringstream s;
+        s << qualifiers << " " << m_args[index];
+        m_args[index] = s.str();
+
+        return index;
+    }
+
 private:
     std::string m_name;
     std::stringstream m_source;
@@ -1004,6 +1020,13 @@ inline meta_kernel& operator<<(meta_kernel &k,
                                const invoked_convert<T, Arg> &expr)
 {
     return k << "convert_" << type_name<T>() << "(" << expr.m_arg << ")";
+}
+
+template<class T, class Arg>
+inline meta_kernel& operator<<(meta_kernel &k,
+                               const invoked_identity<T, Arg> &expr)
+{
+    return k << expr.m_arg;
 }
 
 template<>

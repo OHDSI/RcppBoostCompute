@@ -13,14 +13,13 @@
 
 #include <iterator>
 
+#include <boost/compute/algorithm/detail/balanced_path.hpp>
 #include <boost/compute/algorithm/detail/compact.hpp>
-#include <boost/compute/algorithm/detail/tile_sets.hpp>
 #include <boost/compute/algorithm/exclusive_scan.hpp>
 #include <boost/compute/algorithm/fill_n.hpp>
 #include <boost/compute/container/vector.hpp>
 #include <boost/compute/detail/iterator_range_size.hpp>
 #include <boost/compute/detail/meta_kernel.hpp>
-#include <boost/compute/detail/read_write_single_value.hpp>
 #include <boost/compute/system.hpp>
 
 namespace boost {
@@ -32,9 +31,6 @@ namespace detail {
 ///
 /// Subclass of meta_kernel to perform serial set union after tiling
 ///
-template<class InputIterator1, class InputIterator2,
-         class InputIterator3, class InputIterator4,
-         class OutputIterator1, class OutputIterator2>
 class serial_set_union_kernel : meta_kernel
 {
 public:
@@ -45,6 +41,9 @@ public:
         tile_size = 4;
     }
 
+    template<class InputIterator1, class InputIterator2,
+             class InputIterator3, class InputIterator4,
+             class OutputIterator1, class OutputIterator2>
     void set_range(InputIterator1 first1,
                     InputIterator2 first2,
                     InputIterator3 tile_first1,
@@ -146,20 +145,17 @@ inline OutputIterator set_union(InputIterator1 first1,
 {
     typedef typename std::iterator_traits<InputIterator1>::value_type value_type;
 
-    int tile_size = 4;
+    int tile_size = 1024;
 
     int count1 = detail::iterator_range_size(first1, last1);
     int count2 = detail::iterator_range_size(first2, last2);
 
-    vector<uint_> tile_a((count1+count2+3)/tile_size+1, queue.get_context());
-    vector<uint_> tile_b((count1+count2+3)/tile_size+1, queue.get_context());
+    vector<uint_> tile_a((count1+count2+tile_size-1)/tile_size+1, queue.get_context());
+    vector<uint_> tile_b((count1+count2+tile_size-1)/tile_size+1, queue.get_context());
 
     // Tile the sets
-    detail::tile_sets_kernel<InputIterator1,
-                             InputIterator2,
-                             vector<uint_>::iterator,
-                             vector<uint_>::iterator> tiling_kernel;
-
+    detail::balanced_path_kernel tiling_kernel;
+    tiling_kernel.tile_size = tile_size;
     tiling_kernel.set_range(first1, last1, first2, last2,
                             tile_a.begin()+1, tile_b.begin()+1);
     fill_n(tile_a.begin(), 1, 0, queue);
@@ -170,17 +166,12 @@ inline OutputIterator set_union(InputIterator1 first1,
     fill_n(tile_b.end()-1, 1, count2, queue);
 
     vector<value_type> temp_result(count1+count2, queue.get_context());
-    vector<uint_> counts((count1+count2+3)/tile_size + 1, queue.get_context());
+    vector<uint_> counts((count1+count2+tile_size-1)/tile_size + 1, queue.get_context());
     fill_n(counts.end()-1, 1, 0, queue);
 
     // Find individual unions
-    detail::serial_set_union_kernel<InputIterator1,
-                                    InputIterator2,
-                                    vector<uint_>::iterator,
-                                    vector<uint_>::iterator,
-                                    InputIterator1,
-                                    vector<uint_>::iterator> union_kernel;
-
+    detail::serial_set_union_kernel union_kernel;
+    union_kernel.tile_size = tile_size;
     union_kernel.set_range(first1, first2, tile_a.begin(), tile_a.end(),
                                   tile_b.begin(), temp_result.begin(), counts.begin());
 
@@ -189,15 +180,13 @@ inline OutputIterator set_union(InputIterator1 first1,
     exclusive_scan(counts.begin(), counts.end(), counts.begin(), queue);
 
     // Compact the results
-    detail::compact_kernel<InputIterator1,
-                           vector<uint_>::iterator,
-                           OutputIterator> compact_kernel;
-
+    detail::compact_kernel compact_kernel;
+    compact_kernel.tile_size = tile_size;
     compact_kernel.set_range(temp_result.begin(), counts.begin(), counts.end(), result);
 
     compact_kernel.exec(queue);
 
-    return result + detail::read_single_value<uint_>(counts.get_buffer(), counts.size()-1, queue);
+    return result + (counts.end() - 1).read(queue);
 }
 
 } //end compute namespace

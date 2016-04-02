@@ -48,6 +48,8 @@ public:
     ///
     /// \li \c BOOST_COMPUTE_DEFAULT_DEVICE -
     ///        name of the compute device (e.g. "GTX TITAN")
+    /// \li \c BOOST_COMPUTE_DEFAULT_DEVICE_TYPE
+    ///        type of the compute device (e.g. "GPU" or "CPU")
     /// \li \c BOOST_COMPUTE_DEFAULT_PLATFORM -
     ///        name of the platform (e.g. "NVIDIA CUDA")
     /// \li \c BOOST_COMPUTE_DEFAULT_VENDOR -
@@ -217,7 +219,7 @@ private:
                     if (device.type() != device::cpu)
                         continue;
 
-                if (platform && !matches(device_platform(device).name(), platform))
+                if (platform && !matches(device.platform().name(), platform))
                     continue;
 
                 if (vendor && !matches(device.vendor(), vendor))
@@ -243,12 +245,6 @@ private:
 
         // return the first device found
         return devices_[0];
-    }
-
-    /// \internal_
-    static platform device_platform(const device &device)
-    {
-        return platform(device.get_info<cl_platform_id>(CL_DEVICE_PLATFORM));
     }
 
     /// \internal_

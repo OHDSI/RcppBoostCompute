@@ -94,6 +94,22 @@ public:
         return m_index;
     }
 
+    T read(command_queue &queue) const
+    {
+        BOOST_ASSERT(m_buffer && m_buffer->get());
+        BOOST_ASSERT(m_index < m_buffer->size() / sizeof(T));
+
+        return detail::read_single_value<T>(m_buffer, m_index, queue);
+    }
+
+    void write(const T &value, command_queue &queue)
+    {
+        BOOST_ASSERT(m_buffer && m_buffer->get());
+        BOOST_ASSERT(m_index < m_buffer->size() / sizeof(T));
+
+        detail::write_single_value<T>(m_buffer, m_index, queue);
+    }
+
     template<class Expr>
     detail::buffer_iterator_index_expr<T, Expr>
     operator[](const Expr &expr) const
@@ -101,10 +117,9 @@ public:
         BOOST_ASSERT(m_buffer);
         BOOST_ASSERT(m_buffer->get());
 
-        return detail::buffer_iterator_index_expr<T, Expr>(*m_buffer,
-                                                           m_index,
-                                                           "__constant",
-                                                           expr);
+        return detail::buffer_iterator_index_expr<T, Expr>(
+            *m_buffer, m_index, memory_object::constant_memory, expr
+        );
     }
 
 private:

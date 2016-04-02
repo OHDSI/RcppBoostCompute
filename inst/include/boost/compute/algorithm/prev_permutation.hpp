@@ -17,7 +17,6 @@
 #include <boost/compute/command_queue.hpp>
 #include <boost/compute/container/detail/scalar.hpp>
 #include <boost/compute/algorithm/reverse.hpp>
-#include <boost/compute/detail/read_write_single_value.hpp>
 
 namespace boost {
 namespace compute {
@@ -44,7 +43,7 @@ inline InputIterator prev_permutation_helper(InputIterator first,
     const context &context = queue.get_context();
 
     detail::meta_kernel k("prev_permutation");
-    size_t index_arg = k.add_arg<int *>("__global", "index");
+    size_t index_arg = k.add_arg<int *>(memory_object::global_memory, "index");
     atomic_max<int_> atomic_max_int;
 
     k << k.decl<const int_>("i") << " = get_global_id(0);\n"
@@ -91,8 +90,8 @@ inline InputIterator pp_floor(InputIterator first,
     const context &context = queue.get_context();
 
     detail::meta_kernel k("pp_floor");
-    size_t index_arg = k.add_arg<int *>("__global", "index");
-    size_t value_arg = k.add_arg<value_type>("__private", "value");
+    size_t index_arg = k.add_arg<int *>(memory_object::global_memory, "index");
+    size_t value_arg = k.add_arg<value_type>(memory_object::private_memory, "value");
     atomic_max<int_> atomic_max_int;
 
     k << k.decl<const int_>("i") << " = get_global_id(0);\n"
@@ -150,31 +149,15 @@ inline bool prev_permutation(InputIterator first,
         return false;
     }
 
-    size_t first_index =
-        detail::iterator_range_size(first, first_element);
-    value_type first_value =
-        detail::read_single_value<value_type>(first.get_buffer(),
-                                              first_index,
-                                              queue);
+    value_type first_value = first_element.read(queue);
 
     InputIterator ceiling_element =
         detail::pp_floor(first_element + 1, last, first_value, queue);
 
-    size_t ceiling_index =
-        detail::iterator_range_size(first, ceiling_element);
-    value_type ceiling_value =
-        detail::read_single_value<value_type>(first.get_buffer(),
-                                              ceiling_index,
-                                              queue);
+    value_type ceiling_value = ceiling_element.read(queue);
 
-    detail::write_single_value<value_type>(ceiling_value,
-                                           first.get_buffer(),
-                                           first_index,
-                                           queue);
-    detail::write_single_value<value_type>(first_value,
-                                           first.get_buffer(),
-                                           ceiling_index,
-                                           queue);
+    first_element.write(ceiling_value, queue);
+    ceiling_element.write(first_value, queue);
 
     reverse(first_element + 1, last, queue);
 

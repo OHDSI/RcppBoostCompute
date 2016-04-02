@@ -12,6 +12,7 @@
 #define BOOST_COMPUTE_HPP
 
 #include <boost/compute/algorithm.hpp>
+#include <boost/compute/allocator.hpp>
 #include <boost/compute/async.hpp>
 #include <boost/compute/buffer.hpp>
 #include <boost/compute/cl.hpp>
@@ -28,14 +29,16 @@
 #include <boost/compute/iterator.hpp>
 #include <boost/compute/kernel.hpp>
 #include <boost/compute/lambda.hpp>
+#include <boost/compute/pipe.hpp>
 #include <boost/compute/platform.hpp>
 #include <boost/compute/program.hpp>
 #include <boost/compute/random.hpp>
+#include <boost/compute/svm.hpp>
 #include <boost/compute/system.hpp>
 #include <boost/compute/types.hpp>
 #include <boost/compute/user_event.hpp>
+#include <boost/compute/utility.hpp>
 #include <boost/compute/version.hpp>
-#include <boost/compute/wait_list.hpp>
 
 #ifdef BOOST_COMPUTE_HAVE_HDR_CL_EXT
 #include <boost/compute/cl_ext.hpp>

@@ -1,0 +1,21 @@
+***************
+*** 116,121 ****
+          m_map.clear();
+          m_list.clear();
+      }
+  
+  private:
+      void evict()
+--- 116,127 ----
+          m_map.clear();
+          m_list.clear();
+      }
++     
++     // MAS ADD
++     list_type get_keys() const
++     {
++         return m_list;
++     }
+  
+  private:
+      void evict()

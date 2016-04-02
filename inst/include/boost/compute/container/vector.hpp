@@ -33,8 +33,9 @@
 #include <boost/compute/algorithm/copy.hpp>
 #include <boost/compute/algorithm/copy_n.hpp>
 #include <boost/compute/algorithm/fill_n.hpp>
-#include <boost/compute/container/allocator.hpp>
+#include <boost/compute/allocator/buffer_allocator.hpp>
 #include <boost/compute/iterator/buffer_iterator.hpp>
+#include <boost/compute/type_traits/detail/capture_traits.hpp>
 #include <boost/compute/detail/buffer_value.hpp>
 #include <boost/compute/detail/iterator_range_size.hpp>
 
@@ -98,7 +99,7 @@ namespace compute {
 /// \endcode
 ///
 /// \see buffer
-template<class T, class Alloc = allocator<T> >
+template<class T, class Alloc = buffer_allocator<T> >
 class vector
 {
 public:
@@ -688,7 +689,7 @@ public:
     ///
     /// Returns a command queue usable to issue commands for the vector's
     /// memory buffer. This is used when a member function is called without
-    /// speicifying an existing command queue to use.
+    /// specifying an existing command queue to use.
     command_queue default_queue() const
     {
         const context &context = m_allocator.get_context();
@@ -720,6 +721,23 @@ struct set_kernel_arg<vector<T, Alloc> >
         kernel_.set_arg(index, vector.get_buffer());
     }
 };
+
+// for capturing vector<T> with BOOST_COMPUTE_CLOSURE()
+template<class T, class Alloc>
+struct capture_traits<vector<T, Alloc> >
+{
+    static std::string type_name()
+    {
+        return std::string("__global ") + ::boost::compute::type_name<T>() + "*";
+    }
+};
+
+// meta_kernel streaming operator for vector<T>
+template<class T, class Alloc>
+meta_kernel& operator<<(meta_kernel &k, const vector<T, Alloc> &vector)
+{
+  return k << k.get_buffer_identifier<T>(vector.get_buffer());
+}
 
 } // end detail namespace
 } // end compute namespace

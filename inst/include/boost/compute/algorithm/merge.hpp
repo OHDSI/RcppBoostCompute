@@ -14,31 +14,28 @@
 #include <boost/compute/system.hpp>
 #include <boost/compute/command_queue.hpp>
 #include <boost/compute/algorithm/copy.hpp>
+#include <boost/compute/algorithm/detail/merge_with_merge_path.hpp>
 #include <boost/compute/algorithm/detail/serial_merge.hpp>
 
 namespace boost {
 namespace compute {
 
-/// Merges the sorted values in the range [\p first1, \p last1) with
-/// the sorted values in the range [\p first2, last2) and stores the
-/// result in the range beginning at \p result.
-template<class InputIterator1, class InputIterator2, class OutputIterator>
-inline OutputIterator merge(InputIterator1 first1,
-                            InputIterator1 last1,
-                            InputIterator2 first2,
-                            InputIterator2 last2,
-                            OutputIterator result,
-                            command_queue &queue = system::default_queue())
-{
-    typedef typename std::iterator_traits<InputIterator1>::value_type T1;
-
-    return merge(first1, last1, first2, last2, result, less<T1>(), queue);
-}
-
-/// Merges the sorted values in the range [\p first1, \p last1) with
-/// the sorted values in the range [\p first2, last2) and stores the
-/// result in the range beginning at \p result. Values are compared
-/// using the \p comp function.
+/// Merges the sorted values in the range [\p first1, \p last1) with the sorted
+/// values in the range [\p first2, last2) and stores the result in the range
+/// beginning at \p result. Values are compared using the \p comp function. If
+/// no comparision function is given, \c less is used.
+///
+/// \param first1 first element in the first range to merge
+/// \param last1 last element in the first range to merge
+/// \param first2 first element in the second range to merge
+/// \param last2 last element in the second range to merge
+/// \param result first element in the result range
+/// \param comp comparison function (by default \c less)
+/// \param queue command queue to perform the operation
+///
+/// \return \c OutputIterator to the end of the result range
+///
+/// \see inplace_merge()
 template<class InputIterator1,
          class InputIterator2,
          class OutputIterator,
@@ -51,23 +48,21 @@ inline OutputIterator merge(InputIterator1 first1,
                             Compare comp,
                             command_queue &queue = system::default_queue())
 {
-    size_t size1 = detail::iterator_range_size(first1, last1);
-    size_t size2 = detail::iterator_range_size(first2, last2);
+    return detail::merge_with_merge_path(first1, last1, first2, last2, result, comp, queue);
+}
 
-    // handle trivial cases
-    if(size1 == 0 && size2 == 0){
-        return result;
-    }
-    else if(size1 == 0){
-        return ::boost::compute::copy(first2, last2, result, queue);
-    }
-    else if(size2 == 0){
-        return ::boost::compute::copy(first1, last1, result, queue);
-    }
-
-    return detail::serial_merge(
-        first1, last1, first2, last2, result, comp, queue
-    );
+/// \overload
+template<class InputIterator1, class InputIterator2, class OutputIterator>
+inline OutputIterator merge(InputIterator1 first1,
+                            InputIterator1 last1,
+                            InputIterator2 first2,
+                            InputIterator2 last2,
+                            OutputIterator result,
+                            command_queue &queue = system::default_queue())
+{
+    typedef typename std::iterator_traits<InputIterator1>::value_type value_type;
+    less<value_type> less_than;
+    return merge(first1, last1, first2, last2, result, less_than, queue);
 }
 
 } // end compute namespace

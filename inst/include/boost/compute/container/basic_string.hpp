@@ -16,7 +16,11 @@
 
 #include <boost/compute/cl.hpp>
 #include <boost/compute/algorithm/find.hpp>
+#include <boost/compute/algorithm/search.hpp>
 #include <boost/compute/container/vector.hpp>
+#include <boost/compute/system.hpp>
+#include <boost/compute/command_queue.hpp>
+#include <iosfwd>
 
 namespace boost {
 namespace compute {
@@ -228,12 +232,23 @@ public:
         m_data.clear();
     }
 
+    void swap(basic_string<CharT, Traits> &other)
+    {
+        if(this != &other)
+        {
+            ::boost::compute::vector<CharT> temp_data(other.m_data);
+            other.m_data = m_data;
+            m_data = temp_data;
+        }
+    }
+
     basic_string<CharT, Traits> substr(size_type pos = 0,
                                        size_type count = npos) const
     {
         return basic_string<CharT, Traits>(*this, pos, count);
     }
 
+    /// Finds the first character \p ch
     size_type find(CharT ch, size_type pos = 0) const
     {
         const_iterator iter = ::boost::compute::find(begin() + pos, end(), ch);
@@ -245,9 +260,56 @@ public:
         }
     }
 
+    /// Finds the first substring equal to \p str
+    size_type find(basic_string& str, size_type pos = 0) const
+    {
+        const_iterator iter = ::boost::compute::search(begin() + pos, end(),
+                                                       str.begin(), str.end());
+        if(iter == end()){
+            return npos;
+        }
+        else {
+            return static_cast<size_type>(std::distance(begin(), iter));
+        }
+    }
+
+    /// Finds the first substring equal to the character string
+    /// pointed to by \p s.
+    /// The length of the string is determined by the first null character.
+    ///
+    /// For example, the following code
+    /// \snippet test/test_string.cpp string_find
+    ///
+    /// will return 5 as position.
+    size_type find(const char* s, size_type pos = 0) const
+    {
+        basic_string str(s);
+        const_iterator iter = ::boost::compute::search(begin() + pos, end(),
+                                                       str.begin(), str.end());
+        if(iter == end()){
+            return npos;
+        }
+        else {
+            return static_cast<size_type>(std::distance(begin(), iter));
+        }
+    }
+
 private:
     ::boost::compute::vector<CharT> m_data;
 };
+
+template<class CharT, class Traits>
+std::ostream&
+operator<<(std::ostream& stream,
+           boost::compute::basic_string<CharT, Traits>const& outStr)
+{
+    command_queue queue = ::boost::compute::system::default_queue();
+    boost::compute::copy(outStr.begin(),
+                        outStr.end(),
+                        std::ostream_iterator<CharT>(stream),
+                        queue);
+    return stream;
+}
 
 } // end compute namespace
 } // end boost namespace

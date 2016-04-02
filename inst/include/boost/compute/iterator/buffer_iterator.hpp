@@ -21,10 +21,11 @@
 #include <boost/iterator/iterator_facade.hpp>
 
 #include <boost/compute/buffer.hpp>
-#include <boost/compute/detail/meta_kernel.hpp>
 #include <boost/compute/detail/buffer_value.hpp>
 #include <boost/compute/detail/is_buffer_iterator.hpp>
 #include <boost/compute/detail/is_device_iterator.hpp>
+#include <boost/compute/detail/meta_kernel.hpp>
+#include <boost/compute/detail/read_write_single_value.hpp>
 
 namespace boost {
 namespace compute {
@@ -55,7 +56,7 @@ struct buffer_iterator_index_expr
 
     buffer_iterator_index_expr(const buffer &buffer,
                                size_t index,
-                               const std::string &address_space,
+                               const memory_object::address_space address_space,
                                const IndexExpr &expr)
         : m_buffer(buffer),
           m_index(index),
@@ -74,7 +75,7 @@ struct buffer_iterator_index_expr
 
     const buffer &m_buffer;
     size_t m_index;
-    std::string m_address_space;
+    memory_object::address_space m_address_space;
     IndexExpr m_expr;
 };
 
@@ -167,6 +168,22 @@ public:
         return m_index;
     }
 
+    T read(command_queue &queue) const
+    {
+        BOOST_ASSERT(m_buffer.get());
+        BOOST_ASSERT(m_index < m_buffer.size() / sizeof(T));
+
+        return detail::read_single_value<T>(m_buffer, m_index, queue);
+    }
+
+    void write(const T &value, command_queue &queue)
+    {
+        BOOST_ASSERT(m_buffer.get());
+        BOOST_ASSERT(m_index < m_buffer.size() / sizeof(T));
+
+        detail::write_single_value<T>(value, m_buffer, m_index, queue);
+    }
+
     /// \internal_
     template<class Expr>
     detail::buffer_iterator_index_expr<T, Expr>
@@ -174,10 +191,9 @@ public:
     {
         BOOST_ASSERT(m_buffer.get());
 
-        return detail::buffer_iterator_index_expr<T, Expr>(m_buffer,
-                                                           m_index,
-                                                           "__global",
-                                                           expr);
+        return detail::buffer_iterator_index_expr<T, Expr>(
+            m_buffer, m_index, memory_object::global_memory, expr
+        );
     }
 
 private:

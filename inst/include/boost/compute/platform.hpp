@@ -18,6 +18,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <boost/compute/cl.hpp>
+#include <boost/compute/device.hpp>
 #include <boost/compute/detail/get_object_info.hpp>
 
 namespace boost {
@@ -220,6 +221,11 @@ BOOST_COMPUTE_DETAIL_DEFINE_GET_INFO_SPECIALIZATIONS(platform,
     ((std::string, CL_PLATFORM_VENDOR))
     ((std::string, CL_PLATFORM_EXTENSIONS))
 )
+
+inline boost::compute::platform device::platform() const
+{
+    return boost::compute::platform(get_info<CL_DEVICE_PLATFORM>());
+}
 
 } // end compute namespace
 } // end boost namespace

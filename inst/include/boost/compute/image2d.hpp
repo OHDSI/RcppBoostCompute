@@ -20,8 +20,9 @@
 #include <boost/compute/exception.hpp>
 #include <boost/compute/image_format.hpp>
 #include <boost/compute/memory_object.hpp>
-#include <boost/compute/type_traits/type_name.hpp>
 #include <boost/compute/detail/get_object_info.hpp>
+#include <boost/compute/type_traits/type_name.hpp>
+#include <boost/compute/utility/extents.hpp>
 
 namespace boost {
 namespace compute {
@@ -62,7 +63,11 @@ public:
         desc.image_slice_pitch = 0;
         desc.num_mip_levels = 0;
         desc.num_samples = 0;
+        #ifdef CL_VERSION_2_0
+        desc.mem_object = 0;
+        #else
         desc.buffer = 0;
+        #endif
 
         m_mem = clCreateImage(context,
                               flags,
@@ -137,6 +142,15 @@ public:
     size_t width() const
     {
         return get_info<size_t>(CL_IMAGE_WIDTH);
+    }
+
+    /// Returns the size (width, height) of the image.
+    extents<2> size() const
+    {
+        extents<2> size;
+        size[0] = get_info<size_t>(CL_IMAGE_WIDTH);
+        size[1] = get_info<size_t>(CL_IMAGE_HEIGHT);
+        return size;
     }
 
     /// Returns information about the image.
