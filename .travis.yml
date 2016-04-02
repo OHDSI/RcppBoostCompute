@@ -35,7 +35,7 @@ install:
   - Rscript -e "if (!require('BH')) install.packages('BH')" 
   - Rscript -e "if (!require('drat')) install.packages('drat')"
   - Rscript -e "if (!require('BoostCompiledLibraries')) devtools::install_github('OHDSI/BoostCompiledLibraries')"
-  - Rscript -e "if (!require('rcpp')) install.packages('rcpp')"
+  - Rscript -e "if (!require('Rcpp')) install.packages('Rcpp')"
   - Rscript -e "if (!require('testthat')) install.packages('testthat')"
   
   
