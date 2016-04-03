@@ -74,7 +74,7 @@ install:
         cp ./bin/libOpenCL.so .
         popd
         popd
-      fi    
+      fi
     
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
