@@ -54,8 +54,7 @@ before_install:
 #        popd
 #    fi
   - |
-    if [[ "linux" == "linux" ]]; then
-      rm -rf ${OPENCL_ROOT} # TODO Remove
+    if [[ "linux" == "linux" ]]; then     
       mkdir -p ${OPENCL_ROOT}
       bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
       tar -xjf AMD-SDK.tar.bz2
@@ -67,6 +66,8 @@ before_install:
       export CMAKE_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64;      
       chmod +x ${AMDAPPSDKROOT}/bin/x86_64/clinfo
       ${AMDAPPSDKROOT}/bin/x86_64/clinfo
+      rm AMD-APP-SDK*.sh
+      rm AMD-SDK.tar.bz2
     fi    
 
 # install dependencies
@@ -96,9 +97,9 @@ before_script:
   - export CPLUS_INCLUDE_PATH=${AMDAPPSDKROOT}/include:${CPLUS_INCLUDE_PATH}
   - export LD_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LD_LIBRARY_PATH}  
   - export LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LIBRARY_PATH}  
-  - echo $CPLUS_INCLUDE_PATH
-  - echo $LD_LIBRARY_PATH
-  - echo $LIBRARY_PATH
+#  - echo $CPLUS_INCLUDE_PATH
+#  - echo $LD_LIBRARY_PATH
+#  - echo $LIBRARY_PATH
 #  - ls $HOME/opencl/lib
 #  - ls $HOME/opencl/lib/bin 
 #  - find $OPENCL_ROOT
