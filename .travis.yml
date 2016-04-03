@@ -1,5 +1,10 @@
-languague: c
+languague: cpp
 sudo: false
+
+env:
+  global:
+    - OPENCL_ROOT=~/opencl
+    secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
 
 addons:
   apt:
@@ -13,6 +18,7 @@ addons:
     
 cache:
   directories:
+    - ${OPENCL_ROOT}
     - ~/Rlib     # R libraries
     - ~/texlive  # LaTex 
     - ~/bin      # pandoc 
@@ -36,9 +42,40 @@ install:
   - Rscript -e "if (!require('drat')) install.packages('drat')"
   - Rscript -e "if (!require('BoostCompiledLibraries')) devtools::install_github('OHDSI/BoostCompiledLibraries')"
   - Rscript -e "if (!require('Rcpp')) install.packages('Rcpp')"
-  - Rscript -e "if (!require('testthat')) install.packages('testthat')"
-  
-  
+  - Rscript -e "if (!require('testthat')) install.packages('testthat')"  
+  # Install OpenCL  
+#  - if [[ "true" == "true" ]]; then
+#      wget https://jenkins.choderalab.org/userContent/AMD-APP-SDKInstaller-v3.0.130.135-GA-linux64.tar.bz2;
+#      tar -xjf AMD-APP-SDK*.tar.bz2;
+#      AMDAPPSDK=${HOME}/AMDAPPSDK;
+#      export OPENCL_VENDOR_PATH=${AMDAPPSDK}/etc/OpenCL/vendors;
+#      mkdir -p ${OPENCL_VENDOR_PATH};
+#      sh AMD-APP-SDK*.sh --tar -xf -C ${AMDAPPSDK};
+#      echo libamdocl64.so > ${OPENCL_VENDOR_PATH}/amdocl64.icd;
+#      export LD_LIBRARY_PATH=${AMDAPPSDK}/lib/x86_64:${LD_LIBRARY_PATH};
+#      chmod +x ${AMDAPPSDK}/bin/x86_64/clinfo;
+#      ${AMDAPPSDK}/bin/x86_64/clinfo;
+#    fi    
+    - |
+      if [[ "linux" == "linux" ]]; then
+        mkdir -p ${OPENCL_ROOT}
+        pushd ${OPENCL_ROOT}
+        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+        mv ./OpenCL-ICD-Loader/* .
+        mkdir -p inc/CL
+        pushd inc/CL
+        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
+        mv ./OpenCL-Headers/* .
+        popd
+        mkdir -p lib
+        pushd lib
+        cmake -G "Unix Makefiles" ..
+        make
+        cp ./bin/libOpenCL.so .
+        popd
+        popd
+      fi    
+    
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
@@ -62,6 +99,3 @@ notifications:
   email:
     on_success: change
     on_failure: always
-env:
-  global:
-    secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
