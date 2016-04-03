@@ -9,8 +9,6 @@ env:
   global:
     secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
 
-
-
 addons:
   apt:
     sources:
@@ -23,7 +21,7 @@ addons:
     
 cache:
   directories:
-#    - ${OPENCL_ROOT}
+    - ${OPENCL_ROOT}
     - ~/Rlib     # R libraries
     - ~/texlive  # LaTex 
     - ~/bin      # pandoc 
@@ -61,25 +59,24 @@ install:
 #      chmod +x ${AMDAPPSDK}/bin/x86_64/clinfo;
 #      ${AMDAPPSDK}/bin/x86_64/clinfo;
 #    fi    
-#    - |
-#      if [[ "linux" == "linux" ]]; then
-#        mkdir -p ${OPENCL_ROOT}
-#        pushd ${OPENCL_ROOT}
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
-#        mv ./OpenCL-ICD-Loader/* .
-#        mkdir -p inc/CL
-#        pushd inc/CL
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
-#        mv ./OpenCL-Headers/* .
-#        popd
-#        mkdir -p lib
-#        pushd lib
-#        cmake -G "Unix Makefiles" ..
-#        make
-#        cp ./bin/libOpenCL.so .
-#        popd
-#        popd
-#      fi
+    - if [[ "linux" == "linux" ]]; then
+        mkdir -p ${OPENCL_ROOT}
+        pushd ${OPENCL_ROOT}
+        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+        mv ./OpenCL-ICD-Loader/* .
+        mkdir -p inc/CL
+        pushd inc/CL
+        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
+        mv ./OpenCL-Headers/* .
+        popd
+        mkdir -p lib
+        pushd lib
+        cmake -G "Unix Makefiles" ..
+        make
+        cp ./bin/libOpenCL.so .
+        popd
+        popd
+      fi
     
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
