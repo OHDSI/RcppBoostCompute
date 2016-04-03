@@ -11,6 +11,10 @@ env:
     - secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
     - OPENCL_ROOT=$HOME/opencl
     - TRY_OS="linux"
+    - OPENCL_LIB=amdappsdk
+    - OPENCL_VERSION="12"
+    - AMDAPPSDK_VERSION=291 # OpenCL 1.2   
+    - AMDAPPSDKROOT=${OPENCL_ROOT}/AMDAPPSDK     
 
 addons:
   apt:
@@ -49,20 +53,20 @@ before_install:
         popd
         popd
     fi
-#    - |
-#      if [[ "linux" == "linux" ]]; then
-#        mkdir -p ${OPENCL_ROOT}
-#        bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
-#        tar -xjf AMD-SDK.tar.bz2
-#        export OPENCL_VENDOR_PATH=${AMDAPPSDKROOT}/etc/OpenCL/vendors
-#        mkdir -p ${OPENCL_VENDOR_PATH}
-#        sh AMD-APP-SDK*.sh --tar -xf -C ${AMDAPPSDKROOT}
-#        echo libamdocl64.so > ${OPENCL_VENDOR_PATH}/amdocl64.icd
-#        export LD_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LD_LIBRARY_PATH}
-#        export CMAKE_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64;
-#        chmod +x ${AMDAPPSDKROOT}/bin/x86_64/clinfo
-#        ${AMDAPPSDKROOT}/bin/x86_64/clinfo
-#      fi    
+    - |
+      if [[ "linux" == "linux" ]]; then
+        mkdir -p ${OPENCL_ROOT}
+        bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
+        tar -xjf AMD-SDK.tar.bz2
+        export OPENCL_VENDOR_PATH=${AMDAPPSDKROOT}/etc/OpenCL/vendors
+        mkdir -p ${OPENCL_VENDOR_PATH}
+        sh AMD-APP-SDK*.sh --tar -xf -C ${AMDAPPSDKROOT}
+        echo libamdocl64.so > ${OPENCL_VENDOR_PATH}/amdocl64.icd
+        export LD_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LD_LIBRARY_PATH}
+        export CMAKE_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64;
+        chmod +x ${AMDAPPSDKROOT}/bin/x86_64/clinfo
+        ${AMDAPPSDKROOT}/bin/x86_64/clinfo
+      fi    
 
 # install dependencies
 install:
