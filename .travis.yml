@@ -99,10 +99,7 @@ before_script:
   - echo $LIBRARY_PATH
 #  - ls $HOME/opencl/lib
 #  - ls $HOME/opencl/lib/bin 
-#  - find $OPENCL_ROOT 
- 
-/home/travis/opencl/AMDAPPSDK/include/CL 
-/home/travis/opencl/AMDAPPSDK/lib/x86_64
+#  - find $OPENCL_ROOT
     
  # Build and check package
 script:
