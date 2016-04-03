@@ -54,7 +54,7 @@ before_install:
 #        popd
 #    fi
   - |
-    if [[ "linux" == "linux" ]]; then
+    if [ ! -d "${OPENCL_ROOT}" ]; then    
       mkdir -p ${OPENCL_ROOT}
       bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
       tar -xjf AMD-SDK.tar.bz2
