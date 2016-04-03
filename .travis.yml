@@ -59,24 +59,24 @@ install:
 #      chmod +x ${AMDAPPSDK}/bin/x86_64/clinfo;
 #      ${AMDAPPSDK}/bin/x86_64/clinfo;
 #    fi    
-    - if [[ "linux" == "linux" ]]; then
-        mkdir -p ${OPENCL_ROOT}
-        pushd ${OPENCL_ROOT}
-        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
-        mv ./OpenCL-ICD-Loader/* .
-        mkdir -p inc/CL
-        pushd inc/CL
-        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
-        mv ./OpenCL-Headers/* .
-        popd
-        mkdir -p lib
-        pushd lib
-        cmake -G "Unix Makefiles" ..
-        make
-        cp ./bin/libOpenCL.so .
-        popd
-        popd
-      fi
+#    - if [[ "linux" == "linux" ]]; then
+#        mkdir -p ${OPENCL_ROOT}
+#        pushd ${OPENCL_ROOT}
+#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
+#        mv ./OpenCL-ICD-Loader/* .
+#        mkdir -p inc/CL
+#        pushd inc/CL
+#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
+#        mv ./OpenCL-Headers/* .
+#        popd
+#        mkdir -p lib
+#        pushd lib
+#        cmake -G "Unix Makefiles" ..
+#        make
+#        cp ./bin/libOpenCL.so .
+#        popd
+#        popd
+#      fi
     
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
