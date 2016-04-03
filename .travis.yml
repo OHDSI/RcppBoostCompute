@@ -4,6 +4,7 @@ sudo: false
 env:
   global:
     - OPENCL_ROOT=~/opencl
+    - TRY_OS="linux"
 
 env:
   global:
@@ -59,7 +60,8 @@ install:
 #      chmod +x ${AMDAPPSDK}/bin/x86_64/clinfo;
 #      ${AMDAPPSDK}/bin/x86_64/clinfo;
 #    fi    
-    - if [[ "linux" == "linux" ]]; then
+    - |
+      if [[ "${TRY_OS}" == "linux" ]]; then
       fi
 #        mkdir -p ${OPENCL_ROOT}
 #        pushd ${OPENCL_ROOT}
