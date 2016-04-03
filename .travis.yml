@@ -4,7 +4,7 @@ sudo: false
 env:
   global:
     - OPENCL_ROOT=~/opencl
-    secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
+#    secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
 
 addons:
   apt:
