@@ -48,6 +48,7 @@ before_install:
         popd
     fi
   - ls $HOME/opencl/lib
+  - ls $HOME/opencl/bin  
 
 # install dependencies
 install:
