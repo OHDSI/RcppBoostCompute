@@ -74,8 +74,10 @@ before_script:
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
   - export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:~/opencl/include
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/opencl/lib
+  - export LIBRARY_PATH=$LIBRARY_PATH:~/opencl/lib  
   - echo $CPLUS_INCLUDE_PATH
   - echo $LD_LIBRARY_PATH
+  - echo $LIBRARY_PATH
   
  # Build and check package
 script:
