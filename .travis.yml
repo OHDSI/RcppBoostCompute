@@ -46,7 +46,8 @@ before_install:
         cp ./bin/libOpenCL.so .
         popd
         popd
-    fi    
+    fi
+  - ls $HOME/opencl/lib
 
 # install dependencies
 install:
@@ -73,7 +74,7 @@ before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
   - export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:~/opencl/include
-  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/opencl/lib
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/opencl/lib
   - export LIBRARY_PATH=$LIBRARY_PATH:~/opencl/lib  
   - echo $CPLUS_INCLUDE_PATH
   - echo $LD_LIBRARY_PATH
