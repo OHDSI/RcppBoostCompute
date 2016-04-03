@@ -28,7 +28,6 @@ addons:
     
 cache:
   directories:
-    - $OPENCL_ROOT
     - ~/Rlib     # R libraries
     - ~/texlive  # LaTex 
     - ~/bin      # pandoc 
@@ -54,7 +53,7 @@ before_install:
 #        popd
 #    fi
   - |
-    if [ ! -d "${OPENCL_ROOT}" ]; then    
+    if [[ "linux" == "linux" ]]; then    
       mkdir -p ${OPENCL_ROOT}
       bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
       tar -xjf AMD-SDK.tar.bz2
