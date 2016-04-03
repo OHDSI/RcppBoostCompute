@@ -22,16 +22,16 @@ addons:
     
 cache:
   directories:
-    - ${OPENCL_ROOT}
+    - ~/opencl
     - ~/Rlib     # R libraries
     - ~/texlive  # LaTex 
     - ~/bin      # pandoc 
 
 before_install:
   - |
-    if [[ "${TRY_OS}" == "linux" ]]; then
-        mkdir -p ${OPENCL_ROOT}
-        pushd ${OPENCL_ROOT}
+    if [[ "linux" == "linux" ]]; then
+        mkdir -p ~/opencl
+        pushd ~/opencl
         travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
         mv ./OpenCL-ICD-Loader/* .
         mkdir -p inc/CL
