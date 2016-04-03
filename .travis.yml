@@ -47,8 +47,6 @@ before_install:
         popd
         popd
     fi
-#  - ls $HOME/opencl/lib
-#  - ls $HOME/opencl/bin  
 
 # install dependencies
 install:
@@ -80,7 +78,9 @@ before_script:
   - echo $CPLUS_INCLUDE_PATH
   - echo $LD_LIBRARY_PATH
   - echo $LIBRARY_PATH
-  
+  - ls $HOME/opencl/lib
+  - ls $HOME/opencl/bin  
+    
  # Build and check package
 script:
   - R CMD build .
