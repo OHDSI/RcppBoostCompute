@@ -27,6 +27,12 @@ cache:
     - ~/texlive  # LaTex 
     - ~/bin      # pandoc 
 
+before_install:
+  - |
+    if [[ "${TRY_OS}" == "linux" ]]; then
+        pwd
+    fi    
+
 # install dependencies
 install:
   # Save R packages in Rlib
