@@ -47,11 +47,7 @@ before_install:
         popd
         popd
     fi    
-  - ls ~/opencl
-  - ls ~/opencl/include
-  - ls ~/opencl/include/CL
-  - ls ~/opencl/lib
-  
+
 # install dependencies
 install:
   # Save R packages in Rlib
@@ -72,43 +68,14 @@ install:
   - Rscript -e "if (!require('BoostCompiledLibraries')) devtools::install_github('OHDSI/BoostCompiledLibraries')"
   - Rscript -e "if (!require('Rcpp')) install.packages('Rcpp')"
   - Rscript -e "if (!require('testthat')) install.packages('testthat')"  
-  # Install OpenCL  
-#  - if [[ "true" == "true" ]]; then
-#      wget https://jenkins.choderalab.org/userContent/AMD-APP-SDKInstaller-v3.0.130.135-GA-linux64.tar.bz2;
-#      tar -xjf AMD-APP-SDK*.tar.bz2;
-#      AMDAPPSDK=${HOME}/AMDAPPSDK;
-#      export OPENCL_VENDOR_PATH=${AMDAPPSDK}/etc/OpenCL/vendors;
-#      mkdir -p ${OPENCL_VENDOR_PATH};
-#      sh AMD-APP-SDK*.sh --tar -xf -C ${AMDAPPSDK};
-#      echo libamdocl64.so > ${OPENCL_VENDOR_PATH}/amdocl64.icd;
-#      export LD_LIBRARY_PATH=${AMDAPPSDK}/lib/x86_64:${LD_LIBRARY_PATH};
-#      chmod +x ${AMDAPPSDK}/bin/x86_64/clinfo;
-#      ${AMDAPPSDK}/bin/x86_64/clinfo;
-#    fi    
-#    - |
-#      if [[ "${TRY_OS}" == "linux" ]]; then
-#      fi
-#        mkdir -p ${OPENCL_ROOT}
-#        pushd ${OPENCL_ROOT}
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
-#        mv ./OpenCL-ICD-Loader/* .
-#        mkdir -p inc/CL
-#        pushd inc/CL
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
-#        mv ./OpenCL-Headers/* .
-#        popd
-#        mkdir -p lib
-#        pushd lib
-#        cmake -G "Unix Makefiles" ..
-#        make
-#        cp ./bin/libOpenCL.so .
-#        popd
-#        popd
-#      fi
     
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
+  - export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:~/opencl/include
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/opencl/lib
+  - echo $CPLUS_INCLUDE_PATH
+  - echo $LD_LIBRARY_PATH
   
  # Build and check package
 script:
