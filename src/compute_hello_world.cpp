@@ -88,22 +88,25 @@ List getBoostComputeEnvironment() {
 List getProgramCache(SEXP sexpContext) {
     namespace compute = boost::compute;
 
-    XPtr<compute::context> pContext(sexpContext);
-    auto cache = compute::detail::get_program_cache(*pContext);
-//    if (cache->size() == 0) {
-//        return
-//    }
-    List result(cache->size());
-
-    size_t i = 0;
-    for (auto key : cache->get_keys()) {
-        result[i] = cache->get(key).source();
-        ++i;
-    }
-
-//    List result = List::create(
-//        Named("size") = cache->size()
-//    );
+//     XPtr<compute::context> pContext(sexpContext);
+//     auto cache = compute::detail::get_program_cache(*pContext);
+// //    if (cache->size() == 0) {
+// //        return
+// //    }
+//     List result(cache->size());
+// 
+//     size_t i = 0;
+//     for (auto key : cache->get_keys()) {
+//         result[i] = cache->get(key).source();
+//         ++i;
+//     }
+// 
+// //    List result = List::create(
+// //        Named("size") = cache->size()
+// //    );
+    List result = List::create(
+        Named("tmp") = 1  
+    );
     return result;
 }
 
