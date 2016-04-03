@@ -43,7 +43,7 @@ before_install:
         pushd lib
         cmake -G "Unix Makefiles" ..
         make
-        cp ./bin/libOpenCL.so .
+        cp ./bin/lib* .
         popd
         popd
     fi
