@@ -79,7 +79,7 @@ before_script:
   - echo $LD_LIBRARY_PATH
   - echo $LIBRARY_PATH
   - ls $HOME/opencl/lib
-  - ls $HOME/opencl/bin  
+  - ls $HOME/opencl/lib/bin  
     
  # Build and check package
 script:
