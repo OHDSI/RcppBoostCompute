@@ -11,10 +11,8 @@ Description: Provides access to boost::compute from within
 License: Apache License 2.0 | file LICENSE
 SystemRequirements: C++11
 Depends: 
-    Rcpp (>= 0.11.1),
-    BH (>= 1.54.0),
-    BoostCompiledLibraries (>= 1.54.0)
+    Rcpp (>= 0.11.1)
 LinkingTo: Rcpp,
-    BH,
-    BoostCompiledLibraries
+    BH (>= 1.58.0),
+    BoostCompiledLibraries (>= 1.58.0)
 Suggests: testthat
