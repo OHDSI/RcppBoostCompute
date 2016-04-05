@@ -24,7 +24,11 @@ case $RHOST in
   Linux*)
         # Do something specific for linux
         OPENCL_LIB="-lOpenCL";
-        AC_CHECK_LIB(OpenCL, clFinish, [HAVE_OPENCL="-DHAVE_OPENCL"], [HAVE_OPENCL=""])
+        AC_CHECK_LIB(OpenCL, clFinish, 
+        	[HAVE_OPENCL="-DHAVE_OPENCL";
+        	 OPENCL_LIB="-lOpenCL"], 
+        	[HAVE_OPENCL="";
+        	 OPENCL_LIB=""])
         ;;
    *BSD*)
         # Do something specific for BSD

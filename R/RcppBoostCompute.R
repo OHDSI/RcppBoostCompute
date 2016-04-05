@@ -20,6 +20,9 @@ LdFlags <- function() {
     } else {
         stop("Unsupport system for RcppBoostCompute")
     }
+    if (length(CppFlags()) == 0) {
+        flags <- ""
+    }
     cat(flags)
 }
 

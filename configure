@@ -2626,9 +2626,11 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_OpenCL_clFinish" >&5
 $as_echo "$ac_cv_lib_OpenCL_clFinish" >&6; }
 if test "x$ac_cv_lib_OpenCL_clFinish" = xyes; then :
-  HAVE_OPENCL="-DHAVE_OPENCL"
+  HAVE_OPENCL="-DHAVE_OPENCL";
+        	 OPENCL_LIB="-lOpenCL"
 else
-  HAVE_OPENCL=""
+  HAVE_OPENCL="";
+        	 OPENCL_LIB=""
 fi
 
         ;;
