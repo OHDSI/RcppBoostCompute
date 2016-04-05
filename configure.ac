@@ -14,21 +14,24 @@ RHOST=`"${R_HOME}/bin/Rscript" -e 'cat(Sys.info()[["sysname"]])'`
 
 # Check for which host we are on and setup a few things
 # specifically based on the host
-HAVE_OPENCL=""
+
+HAVE_OPENCL=
+OPENCL_LIB=
+
 case $RHOST in
   Darwin* )
-        # Do something specific for mac
-        OPENCL_LIB="-framework OpenCL";
-        HAVE_OPENCL="-DHAVE_OPENCL"
+        # Do something specific for Mac OS X
+        AC_CHECK_FILE(/System/Library/Frameworks/OpenCL.framework,
+        	[	OPENCL_LIB="-framework OpenCL";
+        		HAVE_OPENCL="-DHAVE_OPENCL"	],
+        	[])
         ;;
   Linux*)
-        # Do something specific for linux
-        OPENCL_LIB="-lOpenCL";
+        # Do something specific for linux        
         AC_CHECK_LIB(OpenCL, clFinish, 
-        	[HAVE_OPENCL="-DHAVE_OPENCL";
-        	 OPENCL_LIB="-lOpenCL"], 
-        	[HAVE_OPENCL="";
-        	 OPENCL_LIB=""])
+        	[	HAVE_OPENCL="-DHAVE_OPENCL";
+        	 	OPENCL_LIB="-lOpenCL"	], 
+        	[])
         ;;
    *BSD*)
         # Do something specific for BSD

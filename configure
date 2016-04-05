@@ -1789,16 +1789,36 @@ RHOST=`"${R_HOME}/bin/Rscript" -e 'cat(Sys.info()["sysname"])'`
 
 # Check for which host we are on and setup a few things
 # specifically based on the host
-HAVE_OPENCL=""
+
+HAVE_OPENCL=
+OPENCL_LIB=
+
 case $RHOST in
   Darwin* )
-        # Do something specific for mac
-        OPENCL_LIB="-framework OpenCL";
-        HAVE_OPENCL="-DHAVE_OPENCL"
+        # Do something specific for Mac OS X
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for /System/Library/Frameworks/OpenCL.framework" >&5
+$as_echo_n "checking for /System/Library/Frameworks/OpenCL.framework... " >&6; }
+if ${ac_cv_file__System_Library_Frameworks_OpenCL_framework+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  test "$cross_compiling" = yes &&
+  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+if test -r "/System/Library/Frameworks/OpenCL.framework"; then
+  ac_cv_file__System_Library_Frameworks_OpenCL_framework=yes
+else
+  ac_cv_file__System_Library_Frameworks_OpenCL_framework=no
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_file__System_Library_Frameworks_OpenCL_framework" >&5
+$as_echo "$ac_cv_file__System_Library_Frameworks_OpenCL_framework" >&6; }
+if test "x$ac_cv_file__System_Library_Frameworks_OpenCL_framework" = xyes; then :
+  	OPENCL_LIB="-framework OpenCL";
+        		HAVE_OPENCL="-DHAVE_OPENCL"
+fi
+
         ;;
   Linux*)
         # Do something specific for linux
-        OPENCL_LIB="-lOpenCL";
         ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -2626,11 +2646,8 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_OpenCL_clFinish" >&5
 $as_echo "$ac_cv_lib_OpenCL_clFinish" >&6; }
 if test "x$ac_cv_lib_OpenCL_clFinish" = xyes; then :
-  HAVE_OPENCL="-DHAVE_OPENCL";
-        	 OPENCL_LIB="-lOpenCL"
-else
-  HAVE_OPENCL="";
-        	 OPENCL_LIB=""
+  	HAVE_OPENCL="-DHAVE_OPENCL";
+        	 	OPENCL_LIB="-lOpenCL"
 fi
 
         ;;
