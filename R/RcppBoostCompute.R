@@ -11,11 +11,11 @@ NULL
 #' @description Returns required system linker flags to link OpenCL library.
 #' @return A string
 #' @export
-LdFlags <- function () {
+LdFlags <- function() {
     system <- Sys.info()["sysname"]
     if (system == "Darwin") {
         flags <- "-framework OpenCL"
-    } else if(system == "Linux") {
+    } else if (system == "Linux") {
         flags <- "-lOpenCL"
     } else {
         stop("Unsupport system for RcppBoostCompute")
@@ -23,7 +23,16 @@ LdFlags <- function () {
     cat(flags)
 }
 
-#' Print out OpenCL devices
+#' RcppBoostCompute preprocessor flags
+#' 
+#' @description Returns preprocessor flags to specific OpenCL availability.
+#' @return A string
+#' @export
+CppFlags <- function() {
+    ""
+}
+
+#' Print available OpenCL devices
 #'
 #' @name compute_hello_world
 #'

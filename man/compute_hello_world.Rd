@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppBoostCompute.R
 \name{compute_hello_world}
 \alias{compute_hello_world}
-\title{Print out OpenCL devices}
+\title{Print available OpenCL devices}
 \description{
 Lists the available OpenCL devices on system.
 }

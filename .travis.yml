@@ -1,25 +1,33 @@
 languague: cpp
-sudo: false
 
 env:
   global:
     - secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
     - OPENCL_ROOT=$HOME/opencl
-    - TRY_OS="linux"
-    - OPENCL_LIB=amdappsdk
-    - OPENCL_VERSION="12"
-    - AMDAPPSDK_VERSION=291 # OpenCL 1.2   
-    - AMDAPPSDKROOT=${OPENCL_ROOT}/AMDAPPSDK     
 
-addons:
-  apt:
-    sources:
-    - r-packages-precise
-    packages:
-    - r-base-dev
-    - r-recommended
-    - texinfo
-    - qpdf
+matrix:
+  include:
+  
+  # No OpenCL
+  
+  # With AMD OpenCL
+  - os: linux
+    sudo: false
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - r-packages-precise
+        packages:
+        - r-base-dev
+        - r-recommended
+        - texinfo
+        - qpdf
+    env:
+      - OPENCL_LIB=amdappsdk
+      - OPENCL_VERSION="12"
+      - AMDAPPSDK_VERSION=291 # OpenCL 1.2   
+      - AMDAPPSDKROOT=${OPENCL_ROOT}/AMDAPPSDK     
     
 cache:
   directories:
@@ -28,27 +36,8 @@ cache:
     - ~/bin      # pandoc 
 
 before_install:
-#  - |
-#    if [[ "linux" == "linux-khronos" ]]; then
-#        mkdir -p ${OPENCL_ROOT}
-#        pushd ~/opencl
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-ICD-Loader.git
-#        mv ./OpenCL-ICD-Loader/* .
-#        mkdir -p include/CL
-#        pushd include/CL
-#        travis_retry git clone --depth 1 https://github.com/KhronosGroup/OpenCL-Headers.git
-#        mv ./OpenCL-Headers/* .
-#        popd
-#        mkdir -p lib
-#        pushd lib
-#        cmake -G "Unix Makefiles" ..
-#        make
-#        cp ./bin/lib* .
-#        popd
-#        popd
-#    fi
   - |
-    if [[ "linux" == "linux" ]]; then    
+    if [[ ${OPENCL_LIB} == "amdappsdk" ]]; then    
       mkdir -p ${OPENCL_ROOT}
       bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
       tar -xjf AMD-SDK.tar.bz2
