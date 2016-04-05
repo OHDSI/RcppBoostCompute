@@ -3,12 +3,25 @@ languague: cpp
 env:
   global:
     - secure: S3VMaROvyrkRV/t2Lmdtt6/B3R7IHynfYX0kRSDL5mW/zkxUpV3Wm8TMOcsUpz7vBX53UK+ze882L/nIzBhVc5NEl2unswqDd8LYMZmAqKeeKB3RiSkdCZPOAJVVvru3M3hy/RIVxQgyCRLK8QSwhax0nVqRu51JL4WUMrDkqxo=
-    - OPENCL_ROOT=$HOME/opencl
+    - OPENCL_STEM=$HOME/opencl
 
 matrix:
   include:
   
   # No OpenCL
+#  - os: linux
+#    sudo: false
+#    compiler: gcc
+#    addons:
+#      apt:
+#        sources:
+#        - r-packages-precise
+#        packages:
+#        - r-base-dev
+#        - r-recommended
+#        - texinfo
+#        - qpdf
+#    env:
   
   # With AMD OpenCL
   - os: linux
@@ -27,7 +40,8 @@ matrix:
       - OPENCL_LIB=amdappsdk
       - OPENCL_VERSION="12"
       - AMDAPPSDK_VERSION=291 # OpenCL 1.2   
-      - AMDAPPSDKROOT=${OPENCL_ROOT}/AMDAPPSDK     
+      - AMDAPPSDKROOT=${OPENCL_STEM}/AMDAPPSDK
+      - OPENCL_ROOT=AMDAPPSDKROOT    
     
 cache:
   directories:
@@ -38,7 +52,7 @@ cache:
 before_install:
   - |
     if [[ ${OPENCL_LIB} == "amdappsdk" ]]; then    
-      mkdir -p ${OPENCL_ROOT}
+      mkdir -p ${OPENCL_STEM}
       bash .travis/amd_sdk.sh ${AMDAPPSDK_VERSION}
       tar -xjf AMD-SDK.tar.bz2
       export OPENCL_VENDOR_PATH=${AMDAPPSDKROOT}/etc/OpenCL/vendors
@@ -77,9 +91,9 @@ install:
 before_script:
   - export PKG_NAME=$(Rscript -e 'cat(paste0(devtools::as.package(".")$package))')
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
-  - export CPLUS_INCLUDE_PATH=${AMDAPPSDKROOT}/include:${CPLUS_INCLUDE_PATH}
-  - export LD_LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LD_LIBRARY_PATH}  
-  - export LIBRARY_PATH=${AMDAPPSDKROOT}/lib/x86_64:${LIBRARY_PATH}  
+  - export CPLUS_INCLUDE_PATH=${OPENCL_ROOT}/include:${CPLUS_INCLUDE_PATH}
+  - export LD_LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LD_LIBRARY_PATH}  
+  - export LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LIBRARY_PATH}  
 #  - echo $CPLUS_INCLUDE_PATH
 #  - echo $LD_LIBRARY_PATH
 #  - echo $LIBRARY_PATH
