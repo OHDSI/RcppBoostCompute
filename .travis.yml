@@ -109,7 +109,7 @@ script:
   - cat ${PKG_NAME}.Rcheck/00install.out # Print out install / compile log
   # Print out device information  
   - R CMD install ${PKG_TARBALL}
-  - Rscript -e "RcppBoostCompute::compute_hello_world()"
+  - Rscript -e "install.packages('${PKG_TARBALL}', repos=NULL, type='source'); RcppBoostCompute::compute_hello_world()"
 
 after_success:
 #  - Rscript -e 'covr::codecov()'
