@@ -93,10 +93,12 @@ before_script:
   - export PKG_TARBALL=$(Rscript -e 'pkg <- devtools::as.package("."); cat(paste0(pkg$package,"_",pkg$version,".tar.gz"))')
   - export CPLUS_INCLUDE_PATH=${OPENCL_ROOT}/include:${CPLUS_INCLUDE_PATH}
   - export LD_LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LD_LIBRARY_PATH}  
-  - export LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LIBRARY_PATH}  
-#  - echo $CPLUS_INCLUDE_PATH
-#  - echo $LD_LIBRARY_PATH
-#  - echo $LIBRARY_PATH
+  - export LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LIBRARY_PATH}
+  - echo $AMDAPPSDKROOT
+  - echo $OPENCL_ROOT
+  - echo $CPLUS_INCLUDE_PATH
+  - echo $LD_LIBRARY_PATH
+  - echo $LIBRARY_PATH
 #  - ls $HOME/opencl/lib
 #  - ls $HOME/opencl/lib/bin 
 #  - find $OPENCL_ROOT
