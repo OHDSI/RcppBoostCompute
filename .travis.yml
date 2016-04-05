@@ -69,7 +69,6 @@ before_install:
 # install dependencies
 install:
   # Save R packages in Rlib
-  - rm -rf ~/RLib
   - mkdir -p ~/Rlib
   - echo 'R_LIBS=~/Rlib' > .Renviron
   - echo 'options(repos = "http://cran.rstudio.com")' > .Rprofile
