@@ -68,7 +68,7 @@ before_install:
 
 # install dependencies
 install:
-  - rm -rf ~/Rlib
+#  - rm -rf ~/Rlib
   # Save R packages in Rlib
   - mkdir -p ~/Rlib
   - echo 'R_LIBS=~/Rlib' > .Renviron
@@ -94,11 +94,11 @@ before_script:
   - export CPLUS_INCLUDE_PATH=${OPENCL_ROOT}/include:${CPLUS_INCLUDE_PATH}
   - export LD_LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LD_LIBRARY_PATH}  
   - export LIBRARY_PATH=${OPENCL_ROOT}/lib/x86_64:${LIBRARY_PATH}
-  - echo $AMDAPPSDKROOT
-  - echo $OPENCL_ROOT
-  - echo $CPLUS_INCLUDE_PATH
-  - echo $LD_LIBRARY_PATH
-  - echo $LIBRARY_PATH
+#  - echo $AMDAPPSDKROOT
+#  - echo $OPENCL_ROOT
+#  - echo $CPLUS_INCLUDE_PATH
+#  - echo $LD_LIBRARY_PATH
+#  - echo $LIBRARY_PATH
 #  - ls $HOME/opencl/lib
 #  - ls $HOME/opencl/lib/bin 
 #  - find $OPENCL_ROOT
@@ -109,7 +109,7 @@ script:
   - _R_CHECK_CRAN_INCOMING_=FALSE R CMD check "${PKG_TARBALL}" --as-cran
   - cat ${PKG_NAME}.Rcheck/00install.out # Print out install / compile log
   # Print out device information   
-  - Rscript -e "install.packages('${PKG_TARBALL}', lib = '.', repo = NULL, type = 'source'); RcppBoostCompute::compute_hello_world()" 
+#  - Rscript -e "install.packages('${PKG_TARBALL}', lib = '.', repo = NULL, type = 'source'); RcppBoostCompute::compute_hello_world()" 
   
 after_success:
 #  - Rscript -e 'covr::codecov()'
