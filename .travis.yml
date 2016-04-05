@@ -41,7 +41,7 @@ matrix:
       - OPENCL_VERSION="12"
       - AMDAPPSDK_VERSION=291 # OpenCL 1.2   
       - AMDAPPSDKROOT=${OPENCL_STEM}/AMDAPPSDK
-      - OPENCL_ROOT=AMDAPPSDKROOT    
+      - OPENCL_ROOT=${AMDAPPSDKROOT}
     
 cache:
   directories:
