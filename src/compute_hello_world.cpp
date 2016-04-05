@@ -16,12 +16,13 @@ std::string cppFlags() {
 // #define BOOST_COMPUTE_DEBUG_KERNEL_COMPILATION
 #define MAS_DEBUG
 
+#ifdef HAVE_OPENCL
 #include <boost/compute/algorithm/transform.hpp>
 #include <boost/compute/algorithm/transform_reduce.hpp>
 #include <boost/compute/container/vector.hpp>
 #include <boost/compute/functional/math.hpp>
 #include <boost/compute/core.hpp>
-
+#endif // HAVE_OPENCL
 
 using namespace Rcpp;
 
