@@ -1794,7 +1794,7 @@ case $RHOST in
   Darwin* )
         # Do something specific for mac
         OPENCL_LIB="-framework OpenCL";
-        #HAVE_OPENCL="-DHAVE_OPENCL"
+        HAVE_OPENCL="-DHAVE_OPENCL"
         ;;
   Linux*)
         # Do something specific for linux

@@ -140,11 +140,12 @@ std::vector<OutType>* makeHostVector(const std::vector<InType>& in) {
     return pTmp;
 }
 
+#ifdef HAVE_OPENCL
 template <typename InType, typename OutType>
 boost::compute::vector<OutType>* makeDeviceVector(const std::vector<InType>& in,
         boost::compute::context& context,
         boost::compute::command_queue& queue) {
-#ifdef HAVE_OPENCL
+
     namespace compute = boost::compute;
 
     std::vector<OutType> tmp;
@@ -156,10 +157,8 @@ boost::compute::vector<OutType>* makeDeviceVector(const std::vector<InType>& in,
     compute::copy(
         tmp.begin(), tmp.end(), (*pDeviceVector).begin(), queue);
     return pDeviceVector;
-#else
-    return nullptr;
-#endif // HAVE_OPENCL
 }
+#endif // HAVE_OPENCL
 
 typedef float DeviceType;
 
