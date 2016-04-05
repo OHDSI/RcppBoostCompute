@@ -10,6 +10,7 @@ NULL
 #' 
 #' @description Returns required system linker flags to link OpenCL library.
 #' @return A string
+#' @export
 LdFlags <- function () {
     system <- Sys.info()["sysname"]
     if (system == "Darwin") {
