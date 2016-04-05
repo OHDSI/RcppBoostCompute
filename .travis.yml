@@ -9,19 +9,19 @@ matrix:
   include:
   
   # No OpenCL
-#  - os: linux
-#    sudo: false
-#    compiler: gcc
-#    addons:
-#      apt:
-#        sources:
-#        - r-packages-precise
-#        packages:
-#        - r-base-dev
-#        - r-recommended
-#        - texinfo
-#        - qpdf
-#    env:
+  - os: linux
+    sudo: false
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - r-packages-precise
+        packages:
+        - r-base-dev
+        - r-recommended
+        - texinfo
+        - qpdf
+    env:
   
   # With AMD OpenCL
   - os: linux
