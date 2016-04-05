@@ -105,8 +105,8 @@ List getBoostComputeEnvironment() {
 
 // [[Rcpp::export]]
 List getProgramCache(SEXP sexpContext) {
-    namespace compute = boost::compute;
-
+    // namespace compute = boost::compute;
+// 
 //     XPtr<compute::context> pContext(sexpContext);
 //     auto cache = compute::detail::get_program_cache(*pContext);
 // //    if (cache->size() == 0) {
