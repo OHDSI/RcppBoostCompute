@@ -5,6 +5,16 @@
 
 using namespace Rcpp;
 
+// cppFlags
+std::string cppFlags();
+RcppExport SEXP RcppBoostCompute_cppFlags() {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    __result = Rcpp::wrap(cppFlags());
+    return __result;
+END_RCPP
+}
 // compute_hello_world
 void compute_hello_world();
 RcppExport SEXP RcppBoostCompute_compute_hello_world() {

@@ -29,7 +29,7 @@ LdFlags <- function() {
 #' @return A string
 #' @export
 CppFlags <- function() {
-    ""
+    cat(.cppFlags())
 }
 
 #' Print available OpenCL devices

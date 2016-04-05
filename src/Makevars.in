@@ -1,6 +1,6 @@
 CXX_STD = CXX11
 
-PKG_CPPFLAGS = -I../inst/include
+PKG_CPPFLAGS = -I../inst/include @HAVE_OPENCL@
 
 PKG_LIBS = `Rscript -e 'BoostCompiledLibraries:::BoostLdFlags()'` @OPENCL_LIB@
 

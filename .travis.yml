@@ -21,7 +21,6 @@ matrix:
         - r-recommended
         - texinfo
         - qpdf
-    env:
   
   # With AMD OpenCL
   - os: linux

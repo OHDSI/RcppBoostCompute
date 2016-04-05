@@ -2,6 +2,17 @@
 #include <vector>
 #include <algorithm>
 
+#include <Rcpp.h>
+
+// [[Rcpp::export(.cppFlags)]]
+std::string cppFlags() {
+#ifdef HAVE_OPENCL
+    return "-DHAVE_OPENCL";
+#else
+    return "";
+#endif
+}
+
 // #define BOOST_COMPUTE_DEBUG_KERNEL_COMPILATION
 #define MAS_DEBUG
 
@@ -11,7 +22,6 @@
 #include <boost/compute/functional/math.hpp>
 #include <boost/compute/core.hpp>
 
-#include <Rcpp.h>
 
 using namespace Rcpp;
 
@@ -36,9 +46,12 @@ using namespace Rcpp;
 //    compute::command_queue& queue;
 //};
 
+
+
+
 // [[Rcpp::export]]
 void compute_hello_world() {
-
+#ifdef HAVE_OPENCL
     namespace compute = boost::compute;
 
     compute::device device = compute::system::default_device();
@@ -51,12 +64,14 @@ void compute_hello_world() {
     for(const auto &platform : boost::compute::system::platforms()) {
          Rcpp::Rcout << platform.name() << std::endl;
      }
+#else
+#endif // HAVE_OPENCL
 }
 
 
 // [[Rcpp::export]]
 List getBoostComputeEnvironment() {
-
+#ifdef HAVE_OPENCL
     namespace compute = boost::compute;
 
     // get default device and setup context
@@ -70,6 +85,9 @@ List getBoostComputeEnvironment() {
         Named("queue") = XPtr<compute::command_queue>(queue));
     // TODO Set S3 class
     return result;
+#else
+    return List::create();
+#endif // HAVE_OPENCL
 }
 
 //namespace Rcpp {
@@ -125,6 +143,7 @@ template <typename InType, typename OutType>
 boost::compute::vector<OutType>* makeDeviceVector(const std::vector<InType>& in,
         boost::compute::context& context,
         boost::compute::command_queue& queue) {
+#ifdef HAVE_OPENCL
     namespace compute = boost::compute;
 
     std::vector<OutType> tmp;
@@ -136,13 +155,16 @@ boost::compute::vector<OutType>* makeDeviceVector(const std::vector<InType>& in,
     compute::copy(
         tmp.begin(), tmp.end(), (*pDeviceVector).begin(), queue);
     return pDeviceVector;
+#else
+    return nullptr;
+#endif // HAVE_OPENCL
 }
 
 typedef float DeviceType;
 
 // [[Rcpp::export]]
 SEXP copyToDevice(SEXP sexpContext, SEXP sexpQueue, const std::vector<int>& rVector) {
-
+#ifdef HAVE_OPENCL
     namespace compute = boost::compute;
 
     XPtr<compute::context> pContext(sexpContext);
@@ -151,6 +173,9 @@ SEXP copyToDevice(SEXP sexpContext, SEXP sexpQueue, const std::vector<int>& rVec
     auto pDeviceVector = makeDeviceVector<int, DeviceType>(rVector, *pContext, *pQueue);
 
     return XPtr<compute::vector<DeviceType>>(pDeviceVector);
+#else
+    return NULL;
+#endif // HAVE_OPENCL
 }
 
 // [[Rcpp::export]]
@@ -162,7 +187,7 @@ SEXP copyToHost(const std::vector<int>& rVector) {
 
 // [[Rcpp::export]]
 double simpleTransformationReduction(SEXP sexpContext, SEXP sexpQueue, SEXP sexpDeviceVector) {
-
+#ifdef HAVE_OPENCL
     namespace compute = boost::compute;
 
     XPtr<compute::context> pContext(sexpContext);
@@ -188,6 +213,9 @@ double simpleTransformationReduction(SEXP sexpContext, SEXP sexpQueue, SEXP sexp
     );
 
     return static_cast<double>(result);
+#else
+    return 0.0;
+#endif // HAVE_OPENCL
 }
 
 
@@ -195,6 +223,8 @@ double simpleTransformationReduction(SEXP sexpContext, SEXP sexpQueue, SEXP sexp
 // [[Rcpp::export]]
 double simpleTransformationReductionWithCopy(SEXP sexpContext, SEXP sexpQueue,
          const std::vector<int>& rVector) {
+
+#ifdef HAVE_OPENCL
 
     namespace compute = boost::compute;
 
@@ -221,6 +251,9 @@ double simpleTransformationReductionWithCopy(SEXP sexpContext, SEXP sexpQueue,
     );
 
     return result;
+#else
+    return 0.0;
+#endif // HAVE_OPENCL
 }
 
 // [[Rcpp::export]]
