@@ -68,6 +68,7 @@ before_install:
 
 # install dependencies
 install:
+  - rm -rf ~/Rlib
   # Save R packages in Rlib
   - mkdir -p ~/Rlib
   - echo 'R_LIBS=~/Rlib' > .Renviron
