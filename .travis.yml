@@ -107,6 +107,8 @@ script:
   - R CMD build .
   - _R_CHECK_CRAN_INCOMING_=FALSE R CMD check "${PKG_TARBALL}" --as-cran
   - cat ${PKG_NAME}.Rcheck/00install.out # Print out install / compile log
+  # Print out device information  
+  - R CMD install .
   - Rscript -e "RcppBoostCompute::compute_hello_world()"
 
 after_success:
